@@ -5,6 +5,10 @@ import pandas as pd
 import glob
 import os
 from dash.dependencies import Input, Output
+import pytest
+from dash.testing.application_runners import import_app
+from dash.testing.browser import Browser
+
 
 folder_path = "/Users/onkar/Desktop/Quantium Virtual Program/quantium-virtual-program/data"  # Replace with the actual folder path where the CSV files are located
 file_pattern = "*.csv"
@@ -29,30 +33,6 @@ combined_df = combined_df.drop(['product','price', 'quantity'], axis=1)
 # Save the merged data frame to a new CSV file
 output_file = "/Users/onkar/Desktop/Quantium Virtual Program/quantium-virtual-program/output.csv"  # Replace with the desired output file path
 combined_df.to_csv(output_file, index=False)
-
-
-# # Sort the data by date
-# combined_df = combined_df.sort_values('date')
-
-# # Create the line chart
-# fig = px.line(combined_df, x='date', y='sales')
-
-# # Create the Dash app
-# app = Dash(__name__)
-
-# # Set up the layout
-# app.layout = html.Div(children=[
-#     html.H1(children='Sales Visualization'),
-
-#     dcc.Graph(
-#         id='sales-chart',
-#         figure=fig
-#     )
-# ])
-
-# # Run the app
-# if __name__ == '__main__':
-#     app.run_server(debug=True)
 
 
 # Create the Dash app
@@ -102,3 +82,47 @@ def update_chart(region):
 # Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+
+# Load the Dash app
+app = import_app("app")
+
+# Create a browser instance
+browser = Browser(app)
+
+def test_header_present():
+    # Start the app in the browser
+    browser.server_url = "http://localhost:8050/"
+    browser.reload()
+
+    # Find the header element
+    header_element = browser.wait_for_element("#header")
+
+    # Assert that the header is present
+    assert header_element.text == "Sales Visualization"
+
+def test_visualization_present():
+    # Start the app in the browser
+    browser.server_url = "http://localhost:8050/"
+    browser.reload()
+
+    # Find the visualization element
+    visualization_element = browser.wait_for_element("#sales-chart")
+
+    # Assert that the visualization is present
+    assert visualization_element is not None
+
+def test_region_picker_present():
+    # Start the app in the browser
+    browser.server_url = "http://localhost:8050/"
+    browser.reload()
+
+    # Find the region picker element
+    region_picker_element = browser.wait_for_element("#region-filter")
+
+    # Assert that the region picker is present
+    assert region_picker_element is not None
+
+# Execute the test suite
+if __name__ == "__main__":
+    pytest.main([__file__])
