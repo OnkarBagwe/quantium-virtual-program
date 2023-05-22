@@ -10,7 +10,7 @@ from dash.testing.application_runners import import_app
 from dash.testing.browser import Browser
 
 
-folder_path = "/Users/onkar/Desktop/Quantium Virtual Program/quantium-virtual-program/data"  # Replace with the actual folder path where the CSV files are located
+folder_path = "/Users/onkar/Desktop/Quantium Virtual Program/quantium-virtual-program/data"
 file_pattern = "*.csv"
 
 # Construct the full file paths by joining the folder path with the file pattern
@@ -28,10 +28,8 @@ combined_df = combined_df[combined_df['product'] == 'pink morsel']
 combined_df['sales'] = combined_df['price'].str.replace('$', '').astype(float) * combined_df['quantity']
 combined_df = combined_df.drop(['product','price', 'quantity'], axis=1)
 
-# print(combined_df)
-
 # Save the merged data frame to a new CSV file
-output_file = "/Users/onkar/Desktop/Quantium Virtual Program/quantium-virtual-program/output.csv"  # Replace with the desired output file path
+output_file = "/Users/onkar/Desktop/Quantium Virtual Program/quantium-virtual-program/output.csv"
 combined_df.to_csv(output_file, index=False)
 
 
